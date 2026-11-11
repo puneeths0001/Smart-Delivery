@@ -9,47 +9,49 @@ st.set_page_config(page_title="Smart Delivery", page_icon="🛵", layout="wide")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-html, body, [class*="css"], .stApp {font-family:'Inter',sans-serif; color:#e9e9f1;}
-.stApp {background:radial-gradient(900px 500px at 70% -10%, rgba(124,92,255,.22), transparent 60%), #0b0b10;}
+html, body, [class*="css"], .stApp {font-family:'Inter',sans-serif; color:#14110f;}
+.stApp {background:radial-gradient(900px 600px at 90% -5%, #ffe2cd, transparent 60%), radial-gradient(700px 500px at 0% 100%, #ffffff, transparent 70%), #f7f1ec;}
 [data-testid="stToolbar"], footer, #MainMenu {display:none;}
 header {background:transparent;}
 .block-container {padding-top:2rem; max-width:1200px;}
 @keyframes up {from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes glow {0%,100%{opacity:.55}50%{opacity:.95}}
+@keyframes bob {0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 @keyframes grow {from{transform:scaleY(.05)}to{transform:scaleY(1)}}
-.clay {position:relative;overflow:hidden;border-radius:28px;padding:22px 26px;margin:7px 0;background:#15151c;border:1px solid #23232d;
- animation:up .8s cubic-bezier(.2,.9,.3,1) both; transition:transform .45s cubic-bezier(.2,.9,.3,1), border-color .45s, box-shadow .45s;}
-.clay:hover {transform:translateY(-8px) scale(1.02);border-color:#7c5cff;box-shadow:0 22px 50px rgba(124,92,255,.28);}
-.white {background:#15151c;}
-.c0{background:linear-gradient(145deg,#1d1a12,#15151c)} .c1{background:linear-gradient(145deg,#111d28,#15151c)}
-.c2{background:linear-gradient(145deg,#27141c,#15151c)} .c3{background:linear-gradient(145deg,#1d1733,#15151c)}
-.c4{background:linear-gradient(145deg,#10261d,#15151c)}
-.hero-card {background:radial-gradient(500px 300px at 85% 110%, rgba(124,92,255,.55), transparent 65%), #15151c;min-height:250px;}
-.eyebrow {color:#8b8b9e;font-size:.9rem;} .lbl {color:#8b8b9e;font-size:.92rem;}
-h1.hero {font-size:2.7rem;font-weight:800;line-height:1.08;margin:8px 0;color:#fff;letter-spacing:-.02em;}
-.college {font-size:1.6rem;font-weight:700;text-align:center;color:#fff;}
-.year {text-align:center;font-size:1.15rem;font-weight:600;color:#3ddc97;}
-.stat {font-size:2.6rem;font-weight:800;color:#3ddc97;line-height:1.1;}
+.clay {position:relative;border-radius:26px;padding:22px 26px;margin:7px 0;background:#fff;border:1px solid #f0e6dc;box-shadow:0 10px 30px rgba(120,80,40,.08);
+ animation:up .8s cubic-bezier(.2,.9,.3,1) both; transition:transform .45s cubic-bezier(.2,.9,.3,1), box-shadow .45s, border-color .45s;}
+.clay:hover {transform:translateY(-8px) scale(1.02);border-color:#ff6a1a;box-shadow:0 24px 50px rgba(255,106,26,.22);}
+.c0{background:linear-gradient(145deg,#fff6e0,#fff)} .c1{background:linear-gradient(145deg,#e9f5ff,#fff)}
+.c2{background:linear-gradient(145deg,#ffe9e2,#fff)} .c3{background:linear-gradient(145deg,#fff0e4,#fff)}
+.c4{background:linear-gradient(145deg,#e6f8ec,#fff)}
+.eyebrow {color:#8a7f76;font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;} .lbl {color:#7a6f66;font-size:.92rem;}
+h1.hero {font-size:4rem;font-weight:800;line-height:1.02;margin:14px 0;color:#14110f;letter-spacing:-.03em;animation:up .9s both;}
+h1.hero span {color:#ff6a1a;}
+.college {font-size:1.5rem;font-weight:800;text-align:center;} .year {text-align:center;font-weight:700;color:#ff6a1a;}
+.stat {font-size:2.2rem;font-weight:800;color:#14110f;line-height:1.1;}
+.stats {display:flex;margin-top:26px;} .stats div {padding:0 26px;border-left:1px solid #d9cdc2;} .stats div:first-child {padding-left:0;border:0;}
+.stats b {font-size:1.5rem;font-weight:800;display:block;}
 .tile {width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;
- background:linear-gradient(135deg,#7c5cff,#5b3fd6);margin-bottom:12px;box-shadow:0 8px 20px rgba(124,92,255,.4);}
-.name {font-size:1.05rem;font-weight:700;color:#fff;}
+ background:linear-gradient(135deg,#ff8a3d,#ff5a0a);margin-bottom:12px;box-shadow:0 8px 20px rgba(255,106,26,.4);}
+.name {font-size:1.05rem;font-weight:700;}
 .bars {display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:14px;}
-.bar {flex:1;border-radius:8px;background:linear-gradient(180deg,#7c5cff,#4b34b8);transform-origin:bottom;animation:grow 1.1s cubic-bezier(.2,.9,.3,1) both;}
-.sw {display:inline-block;width:42px;height:42px;border-radius:14px;margin:8px 8px 0 0;transition:transform .3s;}
-.sw:hover {transform:translateY(-6px) rotate(-6deg);}
+.bar {flex:1;border-radius:8px;background:linear-gradient(180deg,#ff8a3d,#ff5a0a);transform-origin:bottom;animation:grow 1.1s cubic-bezier(.2,.9,.3,1) both;}
+.sw {display:inline-block;width:42px;height:42px;border-radius:14px;margin:8px 8px 0 0;transition:transform .3s;border:1px solid #eee;} .sw:hover {transform:translateY(-6px) rotate(-6deg);}
 .dot {display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:middle;}
-section[data-testid="stSidebar"] {background:linear-gradient(180deg,#3c44b4 0%,#262270 38%,#17143f 78%,#5a2a82 100%);border-right:1px solid rgba(255,255,255,.12);}
-.brand {font-size:1.25rem;font-weight:800;color:#fff;margin:6px 0 22px 6px;}
+.art {animation:bob 6s ease-in-out infinite;filter:drop-shadow(0 30px 30px rgba(120,70,30,.25));}
+section[data-testid="stSidebar"] {background:linear-gradient(180deg,#ffffff 0%,#fff1e6 100%);border-right:1px solid #f0e6dc;}
+.brand {font-size:1.7rem;font-weight:800;margin:6px 0 24px 6px;letter-spacing:-.03em;} .brand span {color:#ff6a1a;}
 section[data-testid="stSidebar"] div[role="radiogroup"] {gap:6px;}
-section[data-testid="stSidebar"] div[role="radiogroup"] label {width:100%;padding:11px 18px;border-radius:16px;transition:background .3s, transform .3s;cursor:pointer;}
-section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {background:rgba(255,255,255,.10);transform:translateX(6px);}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {width:100%;padding:11px 18px;border-radius:999px;transition:background .3s, transform .3s;cursor:pointer;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {background:#ffe3cf;transform:translateX(6px);}
 section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {display:none;}
-section[data-testid="stSidebar"] div[role="radiogroup"] label p {color:#dcdcf7;font-weight:500;font-size:.98rem;}
-section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {background:rgba(255,255,255,.2);}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {font-weight:500;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {background:#14110f;}
 section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p {color:#fff;font-weight:700;}
-.stButton>button {border:0;border-radius:999px;padding:.55rem 1.6rem;color:#fff;font-weight:600;background:linear-gradient(135deg,#7c5cff,#5b3fd6);
- box-shadow:0 10px 24px rgba(124,92,255,.4);transition:transform .3s, box-shadow .3s;}
-.stButton>button:hover {transform:translateY(-3px) scale(1.04);color:#fff;box-shadow:0 14px 30px rgba(124,92,255,.55);}
+.stButton>button {border:0;border-radius:999px;padding:.55rem 1.6rem;color:#fff;font-weight:600;background:#14110f;transition:transform .3s, box-shadow .3s;}
+.stButton>button:hover {transform:translateY(-3px) scale(1.04);color:#fff;box-shadow:0 12px 26px rgba(20,17,15,.3);}
+[data-testid="stForm"] {background:#fff;border-radius:999px;padding:8px 12px;border:1px solid #f0e6dc;box-shadow:0 14px 34px rgba(120,80,40,.12);}
+[data-testid="stForm"] div[data-baseweb="select"]>div {background:transparent;border:0;box-shadow:none;}
+[data-testid="stForm"] button {width:48px;height:48px;padding:0;border-radius:50%;background:#ff6a1a;font-size:1.3rem;box-shadow:0 10px 22px rgba(255,106,26,.45);}
 </style>
 """, unsafe_allow_html=True)
 
@@ -146,16 +148,47 @@ PLACES = {"Majestic (Warehouse)": (12.9767, 77.5713), "Indiranagar": (12.9784, 7
 COL = lambda c: "#ef4444" if c > 0.6 else ("#f5b301" if c > 0.3 else "#22c55e")
 
 # ───────────────────────── Pages ─────────────────────────
+ART = """<svg class="art" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
+<polygon points="20,310 260,410 505,290 270,190" fill="#fff" stroke="#efe5db"/>
+<polygon points="95,300 270,372 470,276 300,206" fill="#37302b"/>
+<polyline points="95,300 270,372 470,276" fill="none" stroke="#ff7a1a" stroke-width="4"/>
+<polygon points="300,70 405,18 405,140 300,195" fill="#ff7a1a"/>
+<polygon points="115,120 115,250 235,308 235,178" fill="#fff"/>
+<polygon points="235,178 235,308 360,246 360,116" fill="#efe9e3"/>
+<polygon points="115,120 235,178 360,116 240,58" fill="#fbf9f6"/>
+<polygon points="140,190 140,252 190,276 190,214" fill="#ff7a1a"/>
+<text transform="translate(262,212) skewY(-26.5)" font-family="Inter,sans-serif" font-weight="800" font-size="24" fill="#14110f">smart<tspan fill="#ff6a1a">.</tspan></text>
+<polygon points="150,236 150,262 175,274 175,248" fill="#d9a566"/><polygon points="150,236 175,248 200,236 175,224" fill="#ecc189"/>
+<polygon points="320,286 320,330 395,364 395,320" fill="#fff"/><polygon points="395,320 395,364 440,342 440,298" fill="#f1ece6"/>
+<polygon points="320,286 395,320 440,298 365,264" fill="#fff"/><polygon points="395,322 440,300 440,314 395,336" fill="#ff7a1a"/>
+<polygon points="400,326 436,308 436,330 400,348" fill="#2a2523"/>
+<circle cx="345" cy="338" r="10" fill="#14110f"/><circle cx="420" cy="354" r="10" fill="#14110f"/>
+<polygon points="400,330 400,370 440,390 440,350" fill="#d9a566"/><polygon points="440,350 440,390 478,372 478,332" fill="#c4914f"/><polygon points="400,330 440,350 478,332 438,312" fill="#ecc189"/>
+<circle cx="60" cy="230" r="34" fill="#6e9a5b"/><circle cx="82" cy="215" r="26" fill="#7fae6a"/><rect x="42" y="258" width="44" height="22" rx="4" fill="#fff"/>
+<circle cx="462" cy="150" r="30" fill="#6e9a5b"/><rect x="446" y="176" width="34" height="20" rx="4" fill="#fff"/>
+</svg>"""
+
 def home():
+    names = list(PLACES)
+    def go():
+        st.session_state.wh = st.session_state.pk or names[0]
+        st.session_state.drops = [st.session_state.dl or "Indiranagar"]
+        st.session_state.page = "Live Traffic"
     card('<div class="college">BGS College of Engineering and Technology</div>', "c3")
     card('<div class="year">🎓 1st Year</div>', "c4", .1)
-    l, r = st.columns([2, 1])
+    l, r = st.columns([1.05, 1])
     with l:
-        card('<div class="eyebrow">Introducing</div><h1 class="hero">Smart Delivery.<br>Every parcel, beautifully routed.</h1>'
-             '<div class="lbl">Live traffic routing · multi-drop planning · damage-proof QR scanning</div>', "hero-card", .15)
+        st.markdown('<div class="eyebrow" style="margin-top:20px">Delivering a brighter tomorrow</div>'
+                    '<h1 class="hero">Send<br>Anything.<br><span>Anywhere.</span></h1>'
+                    '<p class="lbl" style="font-size:1.05rem;max-width:420px">Fast, reliable and smart delivery - live traffic routing, multi-drop planning and damage-proof QR scanning, all powered by maths.</p>', unsafe_allow_html=True)
+        with st.form("quick"):
+            c1, c2, c3 = st.columns([1, 1, .3])
+            c1.selectbox("p", names, index=None, placeholder="📦 Pickup location", key="pk", label_visibility="collapsed")
+            c2.selectbox("d", names[1:], index=None, placeholder="Delivery location", key="dl", label_visibility="collapsed")
+            c3.form_submit_button("→", on_click=go)
+        st.markdown('<div class="stats"><div><b>5</b><span class="lbl">Team members</span></div><div><b>3</b><span class="lbl">Smart modules</span></div><div><b>24/7</b><span class="lbl">Live routing</span></div></div>', unsafe_allow_html=True)
     with r:
-        card('<div class="stat">5</div><div class="lbl">Team members</div>', "white", .25)
-        card('<div class="tile">⚡</div><div class="name">Fastest route</div><div class="lbl">Shown in green, always</div>', "white", .35)
+        st.markdown(ART, unsafe_allow_html=True)
     st.markdown("#### Our Team")
     team = ["PUNEETH S", "MANU G N", "V RAGHUNANDHAN", "PANCHAM GOWDA V R", "PRABHAKAR"]
     for i, (c, n) in enumerate(zip(st.columns(5), team)):
@@ -167,15 +200,16 @@ def home():
         bars = "".join(f'<div class="bar" style="height:{int(rush(h)*100)}%;animation-delay:{.08*k}s"></div>' for k, h in enumerate(hrs))
         card(f'<div class="name">Rush-hour traffic model</div><div class="lbl">Congestion intensity, 6 AM to 10 PM</div><div class="bars">{bars}</div>', "white", .2)
     with r:
-        sw = "".join(f'<span class="sw" style="background:{c}"></span>' for c in ["#7c5cff", "#3ddc97", "#ef4444", "#f5b301", "#38bdf8", "#f4f4f6"])
+        sw = "".join(f'<span class="sw" style="background:{c}"></span>' for c in ["#ff6a1a", "#14110f", "#22c55e", "#f5b301", "#38bdf8", "#ef4444"])
         card(f'<div class="name">Route colours</div><div class="lbl">Red · yellow · green on the map</div>{sw}', "white", .3)
 
 def traffic():
     st.markdown("## 🗺️ Live Traffic & Delivery Route")
     names = list(PLACES)
     c1, c2 = st.columns([1, 2])
-    wh = c1.selectbox("Warehouse / start", names, 0)
-    drops = c2.multiselect("Delivery stops (1 stop = fastest route, 2+ = optimised multi-drop)", names[1:], ["Indiranagar", "Koramangala", "Jayanagar"])
+    st.session_state.setdefault("wh", names[0]); st.session_state.setdefault("drops", ["Indiranagar", "Koramangala", "Jayanagar"])
+    wh = c1.selectbox("Warehouse / start", names, key="wh")
+    drops = c2.multiselect("Delivery stops (1 stop = fastest route, 2+ = optimised multi-drop)", names[1:], key="drops")
     now = dt.datetime.utcnow() + dt.timedelta(hours=5, minutes=30)
     hour = st.slider("Time of day (hours, IST)", 0.0, 24.0, round(now.hour + now.minute / 60, 1), 0.5)
     if not drops:
@@ -194,7 +228,7 @@ def traffic():
         segs = segments(rt, bucket, hour)
         info.append((rt, segs, sum(seg_time_h(d, c) for _, c, d in segs) * 60, sum(d for *_, d in segs)))
     best = min(range(len(info)), key=lambda i: info[i][2])
-    m = folium.Map(location=pts[0], zoom_start=12, tiles="CartoDB dark_matter")
+    m = folium.Map(location=pts[0], zoom_start=12, tiles="CartoDB positron")
     for i, (rt, segs, eta, dist) in enumerate(info):
         if i == best:
             folium.PolyLine(rt, color="#22c55e", weight=15, opacity=.35).add_to(m)  # green halo = fastest
@@ -299,6 +333,7 @@ def qr_tool():
 
 # ───────────────────────── Navigation ─────────────────────────
 with st.sidebar:
-    st.markdown('<div class="brand">🛵 Smart Delivery</div>', unsafe_allow_html=True)
-    page = st.radio("nav", ["Home", "Live Traffic", "QR Scanner"], label_visibility="collapsed")
+    st.markdown('<div class="brand">smart<span>.</span></div>', unsafe_allow_html=True)
+    st.radio("nav", ["Home", "Live Traffic", "QR Scanner"], key="page", label_visibility="collapsed")
+    page = st.session_state.page
 {"Home": home, "Live Traffic": traffic, "QR Scanner": qr_tool}[page]()
