@@ -3,7 +3,7 @@ import numpy as np, requests, streamlit as st, folium, qrcode, cv2
 from PIL import Image, ImageDraw
 from streamlit_folium import st_folium
 
-st.set_page_config(page_title="Smart Delivery", page_icon="🛵", layout="wide")
+st.set_page_config(page_title="Smart Delivery", page_icon="🛵", layout="wide", initial_sidebar_state="expanded")
 
 # ───────────────────────── Claymorphism styling ─────────────────────────
 st.markdown("""
@@ -11,7 +11,9 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 html, body, [class*="css"], .stApp {font-family:'Inter',sans-serif; color:#14110f;}
 .stApp {background:radial-gradient(900px 600px at 90% -5%, #ffe2cd, transparent 60%), radial-gradient(700px 500px at 0% 100%, #ffffff, transparent 70%), #f7f1ec;}
-[data-testid="stToolbar"], footer, #MainMenu {display:none;}
+footer, #MainMenu, [data-testid="stToolbarActions"], [data-testid="stMainMenu"], [data-testid="stDeployButton"], [data-testid="stHeaderActionElements"] {display:none !important;}
+[data-testid="stExpandSidebarButton"], [data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] {display:flex !important; visibility:visible !important; opacity:1 !important; z-index:999999;}
+@media (min-width:769px){ [data-testid="stSidebarCollapseButton"] {display:none !important;} }
 header {background:transparent;}
 .block-container {padding-top:2rem; max-width:1200px;}
 @keyframes up {from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
@@ -39,7 +41,7 @@ h1.hero span {color:#ff6a1a;}
 .dot {display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:middle;}
 .art {animation:bob 6s ease-in-out infinite;filter:drop-shadow(0 30px 30px rgba(120,70,30,.25));}
 section[data-testid="stSidebar"] {background:linear-gradient(180deg,#ffffff 0%,#fff1e6 100%);border-right:1px solid #f0e6dc;}
-.brand {font-size:1.7rem;font-weight:800;margin:6px 0 24px 6px;letter-spacing:-.03em;} .brand span {color:#ff6a1a;}
+.brand {font-size:1.5rem;font-weight:800;margin:6px 0 24px 6px;letter-spacing:-.03em;} .brand span {color:#ff6a1a;}
 section[data-testid="stSidebar"] div[role="radiogroup"] {gap:6px;}
 section[data-testid="stSidebar"] div[role="radiogroup"] label {width:100%;padding:11px 18px;border-radius:999px;transition:background .3s, transform .3s;cursor:pointer;}
 section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {background:#ffe3cf;transform:translateX(6px);}
@@ -183,7 +185,7 @@ ART = """<svg class="art" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/sv
 <polygon points="235,178 235,308 360,246 360,116" fill="#efe9e3"/>
 <polygon points="115,120 235,178 360,116 240,58" fill="#fbf9f6"/>
 <polygon points="140,190 140,252 190,276 190,214" fill="#ff7a1a"/>
-<text transform="translate(262,212) skewY(-26.5)" font-family="Inter,sans-serif" font-weight="800" font-size="24" fill="#14110f">smart<tspan fill="#ff6a1a">.</tspan></text>
+<text transform="translate(249,211) skewY(-26.5)" font-family="Inter,sans-serif" font-weight="800" font-size="15" fill="#14110f">Smart<tspan fill="#ff6a1a"> Delivery</tspan></text>
 <polygon points="150,236 150,262 175,274 175,248" fill="#d9a566"/><polygon points="150,236 175,248 200,236 175,224" fill="#ecc189"/>
 <polygon points="320,286 320,330 395,364 395,320" fill="#fff"/><polygon points="395,320 395,364 440,342 440,298" fill="#f1ece6"/>
 <polygon points="320,286 395,320 440,298 365,264" fill="#fff"/><polygon points="395,322 440,300 440,314 395,336" fill="#ff7a1a"/>
@@ -383,7 +385,7 @@ def qr_tool():
 
 # ───────────────────────── Navigation ─────────────────────────
 with st.sidebar:
-    st.markdown('<div class="brand">smart<span>.</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand">Smart<span> Delivery</span></div>', unsafe_allow_html=True)
     st.radio("nav", ["Home", "Live Traffic", "QR Scanner"], key="page", label_visibility="collapsed")
     page = st.session_state.page
 {"Home": home, "Live Traffic": traffic, "QR Scanner": qr_tool}[page]()
