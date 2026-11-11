@@ -8,44 +8,49 @@ st.set_page_config(page_title="Smart Delivery", page_icon="🛵", layout="wide")
 # ───────────────────────── Claymorphism styling ─────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
-html, body, [class*="css"], .stApp {font-family:'Fredoka',sans-serif; color:#3b2a6b;}
-.stApp {background:#e9e4ff;}
-#MainMenu, header, footer {visibility:hidden;}
-.block-container {padding-top:1.5rem; max-width:1150px;}
-.orb {position:fixed; border-radius:50%; z-index:0; pointer-events:none; animation:float 6s ease-in-out infinite;}
-.o1 {width:120px;height:120px;top:90px;right:8%;background:radial-gradient(circle at 30% 30%,#ffe29a,#f5a623 70%);box-shadow:0 20px 40px rgba(245,166,35,.35);}
-.o2 {width:90px;height:90px;bottom:60px;right:4%;background:radial-gradient(circle at 30% 30%,#ffb3cf,#ec5b8f 70%);box-shadow:0 20px 40px rgba(236,91,143,.35);animation-delay:-3s;}
-@keyframes float {0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
-@keyframes up {from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
-.badge {display:inline-block;padding:8px 22px;border-radius:22px;color:#fff;font-weight:600;
- background:linear-gradient(135deg,#ff9ec0,#f2689b);box-shadow:0 10px 20px rgba(242,104,155,.4), inset 0 -4px 8px rgba(0,0,0,.12), inset 0 4px 8px rgba(255,255,255,.5);}
-h1.hero {font-size:3.4rem;font-weight:700;line-height:1.05;margin:14px 0 6px;color:#3b2a6b;}
-.sub {color:#6b5d94;font-size:1.1rem;}
-.clay {border-radius:32px;padding:22px 26px;margin:12px 0;animation:up .8s cubic-bezier(.2,.9,.3,1) both;
- transition:transform .45s cubic-bezier(.2,.9,.3,1), box-shadow .45s;
- box-shadow:14px 18px 34px rgba(150,125,220,.30), -8px -8px 20px rgba(255,255,255,.9), inset 0 -6px 12px rgba(120,100,200,.12), inset 0 6px 12px rgba(255,255,255,.9);}
-.clay:hover {transform:translateY(-10px) scale(1.025);box-shadow:20px 30px 50px rgba(150,125,220,.40), -8px -8px 20px rgba(255,255,255,.95), inset 0 -6px 12px rgba(120,100,200,.12), inset 0 6px 12px rgba(255,255,255,.9);}
-.white {background:linear-gradient(145deg,#fff,#f3efff);}
-.c0{background:linear-gradient(145deg,#fff3d1,#ffe9b0)} .c1{background:linear-gradient(145deg,#e4f3ff,#cfe8ff)}
-.c2{background:linear-gradient(145deg,#ffe8f1,#ffd3e4)} .c3{background:linear-gradient(145deg,#efe7ff,#e0d3ff)}
-.c4{background:linear-gradient(145deg,#e1fbe9,#c9f3d6)}
-.college {font-size:1.7rem;font-weight:700;text-align:center;}
-.year {text-align:center;font-size:1.3rem;font-weight:600;}
-.avatar {width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:#fff;
- background:radial-gradient(circle at 30% 30%,#9fd0ff,#4c9cf0 75%);box-shadow:0 10px 20px rgba(76,156,240,.4), inset 0 -5px 8px rgba(0,0,0,.15);margin-bottom:10px;}
-.name {font-size:1.25rem;font-weight:600;} .role{color:#6b5d94;font-size:.95rem;}
-div[role="radiogroup"] {gap:10px;flex-wrap:wrap;}
-div[role="radiogroup"] label {background:#fff;border-radius:999px;padding:8px 20px;box-shadow:6px 8px 16px rgba(150,125,220,.28), inset 0 3px 6px #fff;transition:transform .3s;}
-div[role="radiogroup"] label:hover {transform:translateY(-4px);}
-div[role="radiogroup"] label > div:first-child {display:none;}
-.stButton>button {border:0;border-radius:999px;padding:.6rem 1.8rem;color:#fff;font-weight:600;font-family:'Fredoka';
- background:linear-gradient(135deg,#8fd0ff,#4c9cf0);box-shadow:8px 12px 22px rgba(76,156,240,.4), inset 0 -4px 8px rgba(0,0,0,.12), inset 0 4px 8px rgba(255,255,255,.5);transition:transform .3s;}
-.stButton>button:hover {transform:translateY(-4px) scale(1.04);color:#fff;}
-.stat {font-size:1.9rem;font-weight:700;} .lbl{color:#6b5d94;}
-.dot {display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+html, body, [class*="css"], .stApp {font-family:'Inter',sans-serif; color:#e9e9f1;}
+.stApp {background:radial-gradient(900px 500px at 70% -10%, rgba(124,92,255,.22), transparent 60%), #0b0b10;}
+[data-testid="stToolbar"], footer, #MainMenu {display:none;}
+header {background:transparent;}
+.block-container {padding-top:2rem; max-width:1200px;}
+@keyframes up {from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes glow {0%,100%{opacity:.55}50%{opacity:.95}}
+@keyframes grow {from{transform:scaleY(.05)}to{transform:scaleY(1)}}
+.clay {position:relative;overflow:hidden;border-radius:28px;padding:22px 26px;margin:7px 0;background:#15151c;border:1px solid #23232d;
+ animation:up .8s cubic-bezier(.2,.9,.3,1) both; transition:transform .45s cubic-bezier(.2,.9,.3,1), border-color .45s, box-shadow .45s;}
+.clay:hover {transform:translateY(-8px) scale(1.02);border-color:#7c5cff;box-shadow:0 22px 50px rgba(124,92,255,.28);}
+.white {background:#15151c;}
+.c0{background:linear-gradient(145deg,#1d1a12,#15151c)} .c1{background:linear-gradient(145deg,#111d28,#15151c)}
+.c2{background:linear-gradient(145deg,#27141c,#15151c)} .c3{background:linear-gradient(145deg,#1d1733,#15151c)}
+.c4{background:linear-gradient(145deg,#10261d,#15151c)}
+.hero-card {background:radial-gradient(500px 300px at 85% 110%, rgba(124,92,255,.55), transparent 65%), #15151c;min-height:250px;}
+.eyebrow {color:#8b8b9e;font-size:.9rem;} .lbl {color:#8b8b9e;font-size:.92rem;}
+h1.hero {font-size:2.7rem;font-weight:800;line-height:1.08;margin:8px 0;color:#fff;letter-spacing:-.02em;}
+.college {font-size:1.6rem;font-weight:700;text-align:center;color:#fff;}
+.year {text-align:center;font-size:1.15rem;font-weight:600;color:#3ddc97;}
+.stat {font-size:2.6rem;font-weight:800;color:#3ddc97;line-height:1.1;}
+.tile {width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;
+ background:linear-gradient(135deg,#7c5cff,#5b3fd6);margin-bottom:12px;box-shadow:0 8px 20px rgba(124,92,255,.4);}
+.name {font-size:1.05rem;font-weight:700;color:#fff;}
+.bars {display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:14px;}
+.bar {flex:1;border-radius:8px;background:linear-gradient(180deg,#7c5cff,#4b34b8);transform-origin:bottom;animation:grow 1.1s cubic-bezier(.2,.9,.3,1) both;}
+.sw {display:inline-block;width:42px;height:42px;border-radius:14px;margin:8px 8px 0 0;transition:transform .3s;}
+.sw:hover {transform:translateY(-6px) rotate(-6deg);}
+.dot {display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:middle;}
+section[data-testid="stSidebar"] {background:linear-gradient(180deg,#3c44b4 0%,#262270 38%,#17143f 78%,#5a2a82 100%);border-right:1px solid rgba(255,255,255,.12);}
+.brand {font-size:1.25rem;font-weight:800;color:#fff;margin:6px 0 22px 6px;}
+section[data-testid="stSidebar"] div[role="radiogroup"] {gap:6px;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label {width:100%;padding:11px 18px;border-radius:16px;transition:background .3s, transform .3s;cursor:pointer;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {background:rgba(255,255,255,.10);transform:translateX(6px);}
+section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {display:none;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label p {color:#dcdcf7;font-weight:500;font-size:.98rem;}
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {background:rgba(255,255,255,.2);}
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p {color:#fff;font-weight:700;}
+.stButton>button {border:0;border-radius:999px;padding:.55rem 1.6rem;color:#fff;font-weight:600;background:linear-gradient(135deg,#7c5cff,#5b3fd6);
+ box-shadow:0 10px 24px rgba(124,92,255,.4);transition:transform .3s, box-shadow .3s;}
+.stButton>button:hover {transform:translateY(-3px) scale(1.04);color:#fff;box-shadow:0 14px 30px rgba(124,92,255,.55);}
 </style>
-<div class="orb o1"></div><div class="orb o2"></div>
 """, unsafe_allow_html=True)
 
 def card(html, cls="white", delay=0):
@@ -142,20 +147,28 @@ COL = lambda c: "#ef4444" if c > 0.6 else ("#f5b301" if c > 0.3 else "#22c55e")
 
 # ───────────────────────── Pages ─────────────────────────
 def home():
-    l, r = st.columns([1.3, 1])
-    with l:
-        st.markdown('<span class="badge">Smart Delivery</span><h1 class="hero">Deliveries that feel smooth &amp; smart.</h1>'
-                    '<p class="sub">Live traffic routing, multi-drop optimisation and damage-proof QR scanning - powered by maths.</p>', unsafe_allow_html=True)
-    with r:
-        card('<b>Modules</b><br><br>🗺️ Live traffic route<br>📦 Multi-drop planner<br>🔍 Damage-proof QR scan', "white", .1)
     card('<div class="college">BGS College of Engineering and Technology</div>', "c3")
-    card('<div class="year">🎓 1st Year</div>', "c0", .1)
-    st.markdown("### Our Team")
+    card('<div class="year">🎓 1st Year</div>', "c4", .1)
+    l, r = st.columns([2, 1])
+    with l:
+        card('<div class="eyebrow">Introducing</div><h1 class="hero">Smart Delivery.<br>Every parcel, beautifully routed.</h1>'
+             '<div class="lbl">Live traffic routing · multi-drop planning · damage-proof QR scanning</div>', "hero-card", .15)
+    with r:
+        card('<div class="stat">5</div><div class="lbl">Team members</div>', "white", .25)
+        card('<div class="tile">⚡</div><div class="name">Fastest route</div><div class="lbl">Shown in green, always</div>', "white", .35)
+    st.markdown("#### Our Team")
     team = ["PUNEETH S", "MANU G N", "V RAGHUNANDHAN", "PANCHAM GOWDA V R", "PRABHAKAR"]
-    cols = st.columns(5)
-    for i, (c, n) in enumerate(zip(cols, team)):
+    for i, (c, n) in enumerate(zip(st.columns(5), team)):
         with c:
-            card(f'<div class="avatar">{n[0]}</div><div class="name">{n}</div><div class="role">Team member {i+1}</div>', f"c{i%5}", .15 * i)
+            card(f'<div class="tile">{n[0]}</div><div class="name">{n}</div><div class="lbl">Team member {i+1}</div>', f"c{i%5}", .1 * i)
+    l, r = st.columns([2, 1])
+    with l:
+        hrs = list(range(6, 24, 2))
+        bars = "".join(f'<div class="bar" style="height:{int(rush(h)*100)}%;animation-delay:{.08*k}s"></div>' for k, h in enumerate(hrs))
+        card(f'<div class="name">Rush-hour traffic model</div><div class="lbl">Congestion intensity, 6 AM to 10 PM</div><div class="bars">{bars}</div>', "white", .2)
+    with r:
+        sw = "".join(f'<span class="sw" style="background:{c}"></span>' for c in ["#7c5cff", "#3ddc97", "#ef4444", "#f5b301", "#38bdf8", "#f4f4f6"])
+        card(f'<div class="name">Route colours</div><div class="lbl">Red · yellow · green on the map</div>{sw}', "white", .3)
 
 def traffic():
     st.markdown("## 🗺️ Live Traffic & Delivery Route")
@@ -181,7 +194,7 @@ def traffic():
         segs = segments(rt, bucket, hour)
         info.append((rt, segs, sum(seg_time_h(d, c) for _, c, d in segs) * 60, sum(d for *_, d in segs)))
     best = min(range(len(info)), key=lambda i: info[i][2])
-    m = folium.Map(location=pts[0], zoom_start=12, tiles="CartoDB positron")
+    m = folium.Map(location=pts[0], zoom_start=12, tiles="CartoDB dark_matter")
     for i, (rt, segs, eta, dist) in enumerate(info):
         if i == best:
             folium.PolyLine(rt, color="#22c55e", weight=15, opacity=.35).add_to(m)  # green halo = fastest
@@ -285,5 +298,7 @@ def qr_tool():
 """)
 
 # ───────────────────────── Navigation ─────────────────────────
-page = st.radio("nav", ["🏠 Home", "🗺️ Live Traffic", "📦 QR Scanner"], horizontal=True, label_visibility="collapsed")
-{"🏠 Home": home, "🗺️ Live Traffic": traffic, "📦 QR Scanner": qr_tool}[page]()
+with st.sidebar:
+    st.markdown('<div class="brand">🛵 Smart Delivery</div>', unsafe_allow_html=True)
+    page = st.radio("nav", ["Home", "Live Traffic", "QR Scanner"], label_visibility="collapsed")
+{"Home": home, "Live Traffic": traffic, "QR Scanner": qr_tool}[page]()
