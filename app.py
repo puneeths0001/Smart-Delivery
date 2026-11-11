@@ -119,17 +119,43 @@ def lev(a, b):
 OSRM = "https://router.project-osrm.org"
 def _fmt(pts): return ";".join(f"{lo},{la}" for la, lo in pts)
 
+def _osrm(pts, alts="false"):
+    r = requests.get(f"{OSRM}/route/v1/driving/{_fmt(pts)}",
+                     params=dict(overview="full", geometries="geojson", alternatives=alts), timeout=8).json()
+    return [[(la, lo) for lo, la in rt["geometry"]["coordinates"]] for rt in r["routes"]]
+
+def _overlap(r1, r2):
+    """Share of road points two routes have in common (0 = totally different roads)."""
+    s1, s2 = {(round(a, 4), round(b, 4)) for a, b in r1}, {(round(a, 4), round(b, 4)) for a, b in r2}
+    return len(s1 & s2) / max(1, min(len(s1), len(s2)))
+
+def _via(a, b, side):
+    """Point beside the middle of a->b (perpendicular offset) used to force a different road."""
+    return ((a[0] + b[0]) / 2 - (b[1] - a[1]) * .2 * side, (a[1] + b[1]) / 2 + (b[0] - a[0]) * .2 * side)
+
 @st.cache_data(ttl=600, show_spinner=False)
-def get_routes(pts, alts):
+def leg_routes(a, b):
+    """Up to 3 genuinely different road routes between two points."""
     try:
-        r = requests.get(f"{OSRM}/route/v1/driving/{_fmt(pts)}",
-                         params=dict(overview="full", geometries="geojson", alternatives=str(alts).lower()), timeout=8).json()
-        return [[(la, lo) for lo, la in rt["geometry"]["coordinates"]] for rt in r["routes"]]
-    except Exception:  # offline fallback: straight lines
-        line = []
-        for a, b in zip(pts, pts[1:]):
-            line += [(a[0] + (b[0] - a[0]) * t / 20, a[1] + (b[1] - a[1]) * t / 20) for t in range(21)]
-        return [line]
+        cands = []
+        try: cands = _osrm([a, b], "3")
+        except Exception: pass
+        if not cands: cands = _osrm([a, b])
+        for side in (1, -1):                      # OSRM often returns 1 route -> force detours via a side waypoint
+            if len(cands) >= 3: break
+            try:
+                for rt in _osrm([a, _via(a, b, side), b]):
+                    if all(_overlap(rt, c) < .75 for c in cands): cands.append(rt)
+            except Exception: pass
+        return cands[:3]
+    except Exception:  # offline fallback: straight line
+        return [[(a[0] + (b[0] - a[0]) * t / 20, a[1] + (b[1] - a[1]) * t / 20) for t in range(21)]]
+
+@st.cache_data(ttl=600, show_spinner=False)
+def get_routes(pts):
+    """Full-trip alternatives: route j takes the j-th alternative on every leg (works for multi-drop too)."""
+    legs = [leg_routes(a, b) for a, b in zip(pts, pts[1:])]
+    return [[p for l in legs for p in l[min(j, len(l) - 1)]] for j in range(max(len(l) for l in legs))]
 
 @st.cache_data(ttl=600, show_spinner=False)
 def get_matrix(pts):
@@ -222,31 +248,55 @@ def traffic():
         order = tsp(M); pts = tuple(pts[i] for i in order); stops = [wh] + [drops[i - 1] for i in order[1:]]
     else:
         stops = [wh, drops[0]]
-    routes = get_routes(pts, len(pts) == 2)
+    routes = get_routes(pts)
     info = []
     for rt in routes:
         segs = segments(rt, bucket, hour)
         info.append((rt, segs, sum(seg_time_h(d, c) for _, c, d in segs) * 60, sum(d for *_, d in segs)))
     best = min(range(len(info)), key=lambda i: info[i][2])
-    m = folium.Map(location=pts[0], zoom_start=12, tiles="CartoDB positron")
-    for i, (rt, segs, eta, dist) in enumerate(info):
-        if i == best:
-            folium.PolyLine(rt, color="#22c55e", weight=15, opacity=.35).add_to(m)  # green halo = fastest
-        for s, c, d in segs:
-            folium.PolyLine(s, color=COL(c), weight=6 if i == best else 4, opacity=1 if i == best else .6,
-                            tooltip=f"Route {i+1}: congestion {c:.0%}").add_to(m)
+
+    # ---- route chooser (Google-Maps style: pick one of the alternatives) ----
+    labels = [f"Route {i+1} · {e:.0f} min · {d:.1f} km" + ("  ⚡ Fastest" if i == best else "") for i, (_, _, e, d) in enumerate(info)]
+    if len(info) > 1:
+        sel = labels.index(st.radio("🛣️ Choose a route", labels, index=best, horizontal=True))
+        slowest = max(i[2] for i in info)
+        st.caption(f"{len(info)} different road routes found - the fastest saves {slowest - info[best][2]:.0f} min vs the slowest. Grey = alternatives, coloured = selected route (traffic).")
+    else:
+        sel = best
+        st.caption("Only one road route exists for this trip.")
+
+    # ---- map: centre + zoom computed by hand so the route is always framed correctly ----
+    allpts = [p for rt, *_ in info for p in rt]
+    lats, lons = [p[0] for p in allpts], [p[1] for p in allpts]
+    ctr = ((min(lats) + max(lats)) / 2, (min(lons) + max(lons)) / 2)
+    span_lon, span_lat = max(max(lons) - min(lons), 1e-3), max(max(lats) - min(lats), 1e-3)
+    zoom = min(math.log2(800 * 360 / (256 * span_lon)), math.log2(450 * 360 * math.cos(math.radians(ctr[0])) / (256 * span_lat)))
+    m = folium.Map(location=ctr, zoom_start=max(3, min(16, int(zoom))), tiles=None)
+    folium.TileLayer("OpenStreetMap", name="Street map").add_to(m)   # free, no API key
+    folium.TileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                     attr="Esri, Maxar, Earthstar Geographics", name="Satellite").add_to(m)
+
+    for i, (rt, segs, eta, dist) in enumerate(info):        # alternatives first (grey, underneath)
+        if i == sel: continue
+        folium.PolyLine(rt, color="#ffffff", weight=10, opacity=.9).add_to(m)
+        folium.PolyLine(rt, color="#8a94a6", weight=6, opacity=.95,
+                        tooltip=f"Route {i+1}: {eta:.0f} min · {dist:.1f} km").add_to(m)
+    rt, segs, eta, dist = info[sel]                          # selected route on top, coloured by congestion
+    folium.PolyLine(rt, color="#22c55e" if sel == best else "#4c9cf0", weight=16, opacity=.35).add_to(m)
+    folium.PolyLine(rt, color="#ffffff", weight=11, opacity=1).add_to(m)
+    for s, c, d in segs:
+        folium.PolyLine(s, color=COL(c), weight=7, opacity=1, tooltip=f"Route {sel+1}: congestion {c:.0%}").add_to(m)
     for i, s in enumerate(stops):
         folium.Marker(PLACES[s], tooltip=s, icon=folium.DivIcon(html=f'<div style="font-size:26px;transform:translate(-50%,-100%)">{"🏭" if i==0 else "📦"}</div>')).add_to(m)
-    path = info[best][0]
     p = st.slider("🛵 Rider progress", 0, 100, 0, help="Drag to move the delivery bike along the route")
-    pos = path[min(len(path) - 1, int(p / 100 * (len(path) - 1)))]
+    pos = rt[min(len(rt) - 1, int(p / 100 * (len(rt) - 1)))]
     folium.Circle(pos, radius=250, color="#4c9cf0", fill=True, fill_opacity=.3).add_to(m)
     folium.Marker(pos, tooltip="Delivery rider", icon=folium.DivIcon(html='<div style="font-size:38px;transform:translate(-50%,-50%)">🛵</div>')).add_to(m)
-    m.fit_bounds(path)
+    folium.LayerControl(collapsed=True).add_to(m)
     a, b, c = st.columns(3)
-    with a: card(f'<div class="stat">{info[best][2]:.0f} min</div><div class="lbl">Fastest ETA (Route {best+1})</div>', "c4")
-    with b: card(f'<div class="stat">{info[best][3]:.1f} km</div><div class="lbl">Distance</div>', "c1", .1)
-    with c: card('<span class="dot" style="background:#ef4444"></span>Congested<br><span class="dot" style="background:#f5b301"></span>Slightly busy<br><span class="dot" style="background:#22c55e"></span>Clear / fastest', "c0", .2)
+    with a: card(f'<div class="stat">{eta:.0f} min</div><div class="lbl">ETA (Route {sel+1}{" · fastest" if sel == best else ""})</div>', "c4")
+    with b: card(f'<div class="stat">{dist:.1f} km</div><div class="lbl">Distance</div>', "c1", .1)
+    with c: card('<span class="dot" style="background:#ef4444"></span>Congested<br><span class="dot" style="background:#f5b301"></span>Slightly busy<br><span class="dot" style="background:#22c55e"></span>Clear', "c0", .2)
     st.markdown("**Delivery order:** " + " → ".join(stops))
     st_folium(m, height=520, use_container_width=True, returned_objects=[])
     with st.expander("📐 Math used here"):
@@ -254,7 +304,7 @@ def traffic():
 - **Haversine:** `d = 2R·asin√(sin²(Δφ/2) + cosφ₁cosφ₂sin²(Δλ/2))`, R = 6371 km.
 - **Rush-hour model:** `rush(h) = 0.25 + e^(-(h-9)²/4.5) + e^(-(h-18)²/4.5)` (Gaussian peaks at 9 AM and 6 PM).
 - **Speed & time per segment:** `v = v₀(1 − 0.75c)`, `t = d / v`; route time = Σt. Fastest route = `argmin` of total time.
-- **Colours:** c > 0.6 red, 0.3–0.6 yellow, else green. Fastest route gets a green glow.
+- **Alternatives:** OSRM alternatives + detours through a side waypoint (kept only if < 75 % of road points overlap). Every route is timed with the congestion model; the fastest gets a green glow.\n- **Colours:** c > 0.6 red, 0.3–0.6 yellow, else green (selected route); alternatives are grey.
 - **Multi-drop (TSP):** time matrix → nearest-neighbour start → **2-opt** swaps while total time drops.
 - Roads come from OSRM (OpenStreetMap). Free OSRM has no live traffic, so congestion is modelled; plug in a TomTom/Google Traffic API key for real data.
 """)
