@@ -363,8 +363,10 @@ def qr_tool():
             ranked = sorted((lev(raw, c), c) for c in ss.parcels)
             (d1, best), d2 = ranked[0], (ranked[1][0] if len(ranked) > 1 else 99)
             if d1 <= maxd and d2 - d1 >= 2:
-                ss.parcels[best]["status"] = "Delivered ✅"
-                card(f'<b>✅ Matched {best}</b><br>Item: {ss.parcels[best]["item"]}<br>Damaged characters: {d1} · confidence {1 - d1/len(best):.0%}', "c4")
+                if ss.parcels[best]["status"] == "Pending":
+                    ss.parcels[best]["status"] = "Delivered ✅"
+                    st.rerun()  # redraw now so the progress bar and parcel list show the new status immediately
+                card(f'<b>✅ Matched {best} - marked as delivered</b><br>Item: {ss.parcels[best]["item"]}<br>Damaged characters: {d1} · confidence {1 - d1/len(best):.0%}', "c4")
             else:
                 card(f'<b>❌ No safe match</b><br>Closest: {best} (distance {d1}, runner-up {d2}). Rescan or type more characters.', "c2")
         with st.expander("🧪 Damage lab"):
