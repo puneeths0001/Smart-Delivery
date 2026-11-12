@@ -369,13 +369,6 @@ def qr_tool():
                 card(f'<b>✅ Matched {best} - marked as delivered</b><br>Item: {ss.parcels[best]["item"]}<br>Damaged characters: {d1} · confidence {1 - d1/len(best):.0%}', "c4")
             else:
                 card(f'<b>❌ No safe match</b><br>Closest: {best} (distance {d1}, runner-up {d2}). Rescan or type more characters.', "c2")
-        with st.expander("🧪 Damage lab"):
-            code = st.selectbox("Pick a code", list(ss.parcels))
-            k = st.slider("Corrupt characters", 0, 6, 2)
-            bad = list(code)
-            for i in random.sample(range(len(bad)), k): bad[i] = random.choice("#?*")
-            bad = "".join(bad); d, c = min((lev(bad, x), x) for x in ss.parcels)
-            st.write(f"Scanner read: `{bad}` → nearest `{c}` (distance {d}) → {'✅ correct' if c == code and d <= maxd else '❌ rejected'}")
     with st.expander("📐 Math used here"):
         st.markdown("""
 - **Reed–Solomon over GF(256):** QR level **H** adds redundancy so up to ~30% of the symbol can be missing and still decode.
